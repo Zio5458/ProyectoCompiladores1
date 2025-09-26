@@ -1,0 +1,9 @@
+fn suma(a: i32, b: i32) -> i32 {
+    let resultado = a + b;
+    return resultado;
+}
+
+fn main() {
+    let x = suma(3, 4);
+    return;
+}

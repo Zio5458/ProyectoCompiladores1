@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include "ast.hpp"
-using namespace std
+using namespace std;
 
 extern int yyparse(void* scanner);
 extern int yylex_init(void** scanner);

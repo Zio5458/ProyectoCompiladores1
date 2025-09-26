@@ -7,7 +7,7 @@ using namespace std
 
 struct Node {
     virtual ~Node() = default;
-    virtual void print(ostream& os, int indent = 0;)
+    virtual void print(ostream& os, int indent = 0);
 };
 inline void ind(ostream& os, int n) {
     for (int i = 0; i < n; i++) {
@@ -25,10 +25,9 @@ struct Identifier: Expr {
         os << "Identifier(\""<<name<<"\")\n";
     }
 };
-struct Number : Expr
-{
+struct Number : Expr {
     long long value;
-    expicit Number(long long v) : value(v){};
+    explicit Number(long long v) : value(v){};
     void print(ostream& os, int indent) const override {
         ind(os, indent);
         os << "Number("<<value<<")\n";
@@ -49,17 +48,17 @@ struct Unary : Expr {
     void print(ostream& os,int indent) const override {
         ind(os,indent);
         os<<"Unary(\""<<op<<"\")\n";
-        rhs->print(os, indent+2)
+        rhs->print(os, indent+2);
     }
 };
 struct Binary : Expr {
     string op;
     unique_ptr<Expr> lhs,rhs;
-    Binary(Expr* l,string o, Expr* r) : op(move(o)), lhs(l(), rhsr){};
+    Binary(Expr* l,string o, Expr* r) : op(move(o)), lhs(l(), rhs(r)){};
     void print(ostream& os, int indent) const override { ind(os, indent);
         os<<"Binary(\""<<op<<"\")\n";
         lhs->print(os, indent+2);
-        rhs->print(os, indent+2)
+        rhs->print(os, indent+2);
     }
 };
 struct Call : Expr {
@@ -76,7 +75,7 @@ struct Call : Expr {
 };
 
 //Statements
-Struct Stmt : Node {};
+struct Stmt : Node {};
 struct LetStmt : Stmt {
     string name;
     string type;

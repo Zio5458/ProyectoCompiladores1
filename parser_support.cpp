@@ -1,7 +1,8 @@
 #include <cstdio>
 #include "parser.tab.hpp"
+using namespace std;
 
 
 void yyerror(const char* s) {
-  std::fprintf(stderr, "Parse error: %s\n", s);
+  fprintf(stderr, "Parse error: %s\n", s);
 }

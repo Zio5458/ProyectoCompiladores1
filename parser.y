@@ -2,6 +2,7 @@
 #include "ast.hpp"
 #include <vector>
 #include <string>
+using namespace std;
 }
 
 %union {
@@ -12,8 +13,8 @@
     Func* func;
     Program* program;
     Param* param;
-    std::vector<Param*>* param_list;
-    std::vector<std::string>* string_list;
+    vector<Param*>* param_list;
+    vector<string>* string_list;
     char* str;
     long num;
     bool boolean;
@@ -43,7 +44,6 @@ void yyerror(const char* s);
 %type <expr> expr logic_and equality relational additive multiplicative unary primary
 
 %%
-
 program:
       %empty { $$ = new Program(); g_program = $$; }
     | program function { $1->add($2); $$ = $1; }
@@ -51,21 +51,15 @@ program:
 
 function:
     TOK_FN TOK_ID TOK_LPAREN param_list_opt TOK_RPAREN opt_ret block {
-        // Crear la función
         Func* f = new Func($2);
-
-        // Asignar parámetros (convertir Param* a nombres si Func::params es vector<string>)
         for (Param* p : *$4) {
-            f->params.push_back(p->name); // asumiendo Param tiene 'name' como std::string
+            f->params.push_back(p->name);
         }
-        delete $4; // liberar vector temporal
+        delete $4; //liberar vector temporal
 
-        // Tipo de retorno
+        //Tipo de retorno
         f->ret_type = $6 ? std::string($6) : "void";
-
-        // Asignar el bloque de código al unique_ptr
         f->body = std::unique_ptr<Block>($7);
-
         $$ = f;
     }
     ;
@@ -152,6 +146,4 @@ primary:
     | TOK_ID                        { $$ = new Identifier($1); }
     | TOK_LPAREN expr TOK_RPAREN    { $$ = $2; }
     ;
-
-
 %%

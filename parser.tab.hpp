@@ -50,8 +50,9 @@ extern int yydebug;
 #include "ast.hpp"
 #include <vector>
 #include <string>
+using namespace std;
 
-#line 55 "parser.tab.hpp"
+#line 56 "parser.tab.hpp"
 
 /* Token kinds.  */
 #ifndef YYTOKENTYPE
@@ -98,7 +99,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 7 "parser.y"
+#line 8 "parser.y"
 
     Node* node;
     Expr* expr;
@@ -107,13 +108,13 @@ union YYSTYPE
     Func* func;
     Program* program;
     Param* param;
-    std::vector<Param*>* param_list;
-    std::vector<std::string>* string_list;
+    vector<Param*>* param_list;
+    vector<string>* string_list;
     char* str;
     long num;
     bool boolean;
 
-#line 117 "parser.tab.hpp"
+#line 118 "parser.tab.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

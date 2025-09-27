@@ -148,7 +148,7 @@ typedef enum yysymbol_kind_t yysymbol_kind_t;
 
 
 /* Unqualified %code blocks.  */
-#line 22 "parser.y"
+#line 23 "parser.y"
 
 extern int yylex();
 void yyerror(const char* s);
@@ -537,11 +537,11 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    48,    48,    49,    53,    75,    76,    80,    81,    85,
-      89,    90,    94,    98,    99,   103,   104,   105,   106,   107,
-     108,   112,   113,   117,   118,   122,   123,   127,   128,   129,
-     133,   134,   135,   139,   140,   141,   145,   146,   150,   151,
-     152,   153
+       0,    48,    48,    49,    53,    69,    70,    74,    75,    79,
+      83,    84,    88,    92,    93,    97,    98,    99,   100,   101,
+     102,   106,   107,   111,   112,   116,   117,   121,   122,   123,
+     127,   128,   129,   133,   134,   135,   139,   140,   144,   145,
+     146,   147
 };
 #endif
 
@@ -1166,208 +1166,202 @@ yyreduce:
   case 4: /* function: TOK_FN TOK_ID TOK_LPAREN param_list_opt TOK_RPAREN opt_ret block  */
 #line 53 "parser.y"
                                                                      {
-        // Crear la función
         Func* f = new Func((yyvsp[-5].str));
-
-        // Asignar parámetros (convertir Param* a nombres si Func::params es vector<string>)
         for (Param* p : *(yyvsp[-3].param_list)) {
-            f->params.push_back(p->name); // asumiendo Param tiene 'name' como std::string
+            f->params.push_back(p->name);
         }
-        delete (yyvsp[-3].param_list); // liberar vector temporal
+        delete (yyvsp[-3].param_list); //liberar vector temporal
 
-        // Tipo de retorno
+        //Tipo de retorno
         f->ret_type = (yyvsp[-1].str) ? std::string((yyvsp[-1].str)) : "void";
-
-        // Asignar el bloque de código al unique_ptr
         f->body = std::unique_ptr<Block>((yyvsp[0].block));
-
         (yyval.func) = f;
     }
-#line 1187 "parser.tab.cpp"
+#line 1181 "parser.tab.cpp"
     break;
 
   case 5: /* param_list_opt: %empty  */
-#line 75 "parser.y"
+#line 69 "parser.y"
              { (yyval.param_list) = new std::vector<Param*>(); }
-#line 1193 "parser.tab.cpp"
+#line 1187 "parser.tab.cpp"
     break;
 
   case 6: /* param_list_opt: param_list  */
-#line 76 "parser.y"
+#line 70 "parser.y"
                  { (yyval.param_list) = (yyvsp[0].param_list); }
-#line 1199 "parser.tab.cpp"
+#line 1193 "parser.tab.cpp"
     break;
 
   case 7: /* param_list: param  */
-#line 80 "parser.y"
+#line 74 "parser.y"
             { (yyval.param_list) = new std::vector<Param*>(); (yyval.param_list)->push_back((yyvsp[0].param)); }
-#line 1205 "parser.tab.cpp"
+#line 1199 "parser.tab.cpp"
     break;
 
   case 8: /* param_list: param_list TOK_COMMA param  */
-#line 81 "parser.y"
+#line 75 "parser.y"
                                  { (yyvsp[-2].param_list)->push_back((yyvsp[0].param)); (yyval.param_list) = (yyvsp[-2].param_list); }
-#line 1211 "parser.tab.cpp"
+#line 1205 "parser.tab.cpp"
     break;
 
   case 9: /* param: TOK_ID TOK_COLON TOK_TYPE  */
-#line 85 "parser.y"
+#line 79 "parser.y"
                               { (yyval.param) = new Param((yyvsp[-2].str), (yyvsp[0].str)); }
-#line 1217 "parser.tab.cpp"
+#line 1211 "parser.tab.cpp"
     break;
 
   case 10: /* opt_ret: %empty  */
-#line 89 "parser.y"
+#line 83 "parser.y"
              { (yyval.str) = nullptr; }
-#line 1223 "parser.tab.cpp"
+#line 1217 "parser.tab.cpp"
     break;
 
   case 11: /* opt_ret: TOK_ARROW TOK_TYPE  */
-#line 90 "parser.y"
+#line 84 "parser.y"
                          { (yyval.str) = (yyvsp[0].str); }
-#line 1229 "parser.tab.cpp"
+#line 1223 "parser.tab.cpp"
     break;
 
   case 12: /* block: TOK_LBRACE stmt_list TOK_RBRACE  */
-#line 94 "parser.y"
+#line 88 "parser.y"
                                     { (yyval.block) = (yyvsp[-1].block); }
-#line 1235 "parser.tab.cpp"
+#line 1229 "parser.tab.cpp"
     break;
 
   case 13: /* stmt_list: stmt  */
-#line 98 "parser.y"
+#line 92 "parser.y"
            { Block* b = new Block(); b->add((yyvsp[0].stmt)); (yyval.block) = b; }
-#line 1241 "parser.tab.cpp"
+#line 1235 "parser.tab.cpp"
     break;
 
   case 14: /* stmt_list: stmt_list stmt  */
-#line 99 "parser.y"
+#line 93 "parser.y"
                      { (yyvsp[-1].block)->add((yyvsp[0].stmt)); (yyval.block) = (yyvsp[-1].block); }
-#line 1247 "parser.tab.cpp"
+#line 1241 "parser.tab.cpp"
     break;
 
   case 15: /* stmt: TOK_LET TOK_ID TOK_EQ expr TOK_SEMI  */
-#line 103 "parser.y"
+#line 97 "parser.y"
                                           { (yyval.stmt) = new LetStmt((yyvsp[-3].str), (yyvsp[-1].expr)); }
-#line 1253 "parser.tab.cpp"
+#line 1247 "parser.tab.cpp"
     break;
 
   case 16: /* stmt: TOK_RETURN expr TOK_SEMI  */
-#line 104 "parser.y"
+#line 98 "parser.y"
                                { (yyval.stmt) = new ReturnStmt((yyvsp[-1].expr)); }
-#line 1259 "parser.tab.cpp"
+#line 1253 "parser.tab.cpp"
     break;
 
   case 17: /* stmt: TOK_RETURN TOK_SEMI  */
-#line 105 "parser.y"
+#line 99 "parser.y"
                           { (yyval.stmt) = new ReturnStmt(nullptr); }
-#line 1265 "parser.tab.cpp"
+#line 1259 "parser.tab.cpp"
     break;
 
   case 18: /* stmt: TOK_IF expr block TOK_ELSE block  */
-#line 106 "parser.y"
+#line 100 "parser.y"
                                        { (yyval.stmt) = new IfStmt((yyvsp[-3].expr), (yyvsp[-2].block), (yyvsp[0].block)); }
-#line 1271 "parser.tab.cpp"
+#line 1265 "parser.tab.cpp"
     break;
 
   case 19: /* stmt: TOK_IF expr block  */
-#line 107 "parser.y"
+#line 101 "parser.y"
                         { (yyval.stmt) = new IfStmt((yyvsp[-1].expr), (yyvsp[0].block), nullptr); }
-#line 1277 "parser.tab.cpp"
+#line 1271 "parser.tab.cpp"
     break;
 
   case 20: /* stmt: expr TOK_SEMI  */
-#line 108 "parser.y"
+#line 102 "parser.y"
                     { (yyval.stmt) = new ExprStmt((yyvsp[-1].expr)); }
-#line 1283 "parser.tab.cpp"
+#line 1277 "parser.tab.cpp"
     break;
 
   case 21: /* expr: expr TOK_OR logic_and  */
-#line 112 "parser.y"
+#line 106 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "||", (yyvsp[0].expr)); }
-#line 1289 "parser.tab.cpp"
+#line 1283 "parser.tab.cpp"
     break;
 
   case 23: /* logic_and: logic_and TOK_AND equality  */
-#line 117 "parser.y"
+#line 111 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "&&", (yyvsp[0].expr)); }
-#line 1295 "parser.tab.cpp"
+#line 1289 "parser.tab.cpp"
     break;
 
   case 25: /* equality: equality TOK_EQ relational  */
-#line 122 "parser.y"
+#line 116 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "==", (yyvsp[0].expr)); }
-#line 1301 "parser.tab.cpp"
+#line 1295 "parser.tab.cpp"
     break;
 
   case 27: /* relational: relational TOK_LT additive  */
-#line 127 "parser.y"
+#line 121 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "<",  (yyvsp[0].expr)); }
-#line 1307 "parser.tab.cpp"
+#line 1301 "parser.tab.cpp"
     break;
 
   case 28: /* relational: relational TOK_GT additive  */
-#line 128 "parser.y"
+#line 122 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), ">",  (yyvsp[0].expr)); }
-#line 1313 "parser.tab.cpp"
+#line 1307 "parser.tab.cpp"
     break;
 
   case 30: /* additive: additive TOK_PLUS multiplicative  */
-#line 133 "parser.y"
+#line 127 "parser.y"
                                         { (yyval.expr) = new Binary((yyvsp[-2].expr), "+", (yyvsp[0].expr)); }
-#line 1319 "parser.tab.cpp"
+#line 1313 "parser.tab.cpp"
     break;
 
   case 31: /* additive: additive TOK_MINUS multiplicative  */
-#line 134 "parser.y"
+#line 128 "parser.y"
                                         { (yyval.expr) = new Binary((yyvsp[-2].expr), "-", (yyvsp[0].expr)); }
-#line 1325 "parser.tab.cpp"
+#line 1319 "parser.tab.cpp"
     break;
 
   case 33: /* multiplicative: multiplicative TOK_MUL unary  */
-#line 139 "parser.y"
+#line 133 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "*", (yyvsp[0].expr)); }
-#line 1331 "parser.tab.cpp"
+#line 1325 "parser.tab.cpp"
     break;
 
   case 34: /* multiplicative: multiplicative TOK_DIV unary  */
-#line 140 "parser.y"
+#line 134 "parser.y"
                                     { (yyval.expr) = new Binary((yyvsp[-2].expr), "/", (yyvsp[0].expr)); }
-#line 1337 "parser.tab.cpp"
+#line 1331 "parser.tab.cpp"
     break;
 
   case 36: /* unary: TOK_NOT unary  */
-#line 145 "parser.y"
+#line 139 "parser.y"
                                     { (yyval.expr) = new Unary("!", (yyvsp[0].expr)); }
-#line 1343 "parser.tab.cpp"
+#line 1337 "parser.tab.cpp"
     break;
 
   case 38: /* primary: TOK_NUM  */
-#line 150 "parser.y"
+#line 144 "parser.y"
                                     { (yyval.expr) = new Number((yyvsp[0].num)); }
-#line 1349 "parser.tab.cpp"
+#line 1343 "parser.tab.cpp"
     break;
 
   case 39: /* primary: TOK_BOOL  */
-#line 151 "parser.y"
+#line 145 "parser.y"
                                     { (yyval.expr) = new BoolLit((yyvsp[0].boolean)); }
-#line 1355 "parser.tab.cpp"
+#line 1349 "parser.tab.cpp"
     break;
 
   case 40: /* primary: TOK_ID  */
-#line 152 "parser.y"
+#line 146 "parser.y"
                                     { (yyval.expr) = new Identifier((yyvsp[0].str)); }
-#line 1361 "parser.tab.cpp"
+#line 1355 "parser.tab.cpp"
     break;
 
   case 41: /* primary: TOK_LPAREN expr TOK_RPAREN  */
-#line 153 "parser.y"
+#line 147 "parser.y"
                                     { (yyval.expr) = (yyvsp[-1].expr); }
-#line 1367 "parser.tab.cpp"
+#line 1361 "parser.tab.cpp"
     break;
 
 
-#line 1371 "parser.tab.cpp"
+#line 1365 "parser.tab.cpp"
 
       default: break;
     }
@@ -1560,5 +1554,4 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 157 "parser.y"
-
+#line 149 "parser.y"

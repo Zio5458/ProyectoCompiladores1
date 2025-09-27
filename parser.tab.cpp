@@ -1134,7 +1134,7 @@ yyreduce:
     {
   case 2: /* program: %empty  */
 #line 48 "parser.y"
-      { (yyval.program) = new Program(); g_program = (yyval.program); }
+             { (yyval.program) = new Program(); g_program = (yyval.program); }
 #line 1139 "parser.tab.cpp"
     break;
 
@@ -1169,7 +1169,7 @@ yyreduce:
 
   case 5: /* param_list_opt: %empty  */
 #line 75 "parser.y"
-      { (yyval.param_list) = new std::vector<Param*>(); }
+             { (yyval.param_list) = new std::vector<Param*>(); }
 #line 1174 "parser.tab.cpp"
     break;
 
@@ -1199,7 +1199,7 @@ yyreduce:
 
   case 10: /* opt_ret: %empty  */
 #line 89 "parser.y"
-      { (yyval.str) = nullptr; }
+             { (yyval.str) = nullptr; }
 #line 1204 "parser.tab.cpp"
     break;
 

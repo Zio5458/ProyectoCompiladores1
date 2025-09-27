@@ -1,14 +1,10 @@
-fn multiplicar(a: i32, b: i32) -> i32 {
-    return a * b;
-}
-
-fn main() {
+fn test_identifiers() {
     let x = 5;
-    let y = 8;
-
-    if x > y {
-        return;
+    let y = true;
+    let fn_call = x;
+    if y { 
+        let z = x;
     } else {
-        let resultado = multiplicar(x, y);
+        let z = 0;
     }
 }

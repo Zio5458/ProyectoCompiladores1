@@ -1,11 +1,5 @@
-fn sumar(a: i32, b: i32) -> i32 {
-    return a + b;
-}
-
-fn main() {
-    let x = 2;
-    let y = 3;
-    let z = 4;
-
-    let total = sumar(x, y) + sumar(y, z);
+fn test_delimiters() {
+    let x = (1 + 2) * 3;
+    let y = x / (2 + 1);
+    let z = x % y;
 }

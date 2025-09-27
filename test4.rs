@@ -1,10 +1,15 @@
-fn imprimir_valor(v: i32) {
-    let temp = v + 1;
+fn test_operators() -> i32 {
+    let a = 10 + 5;
+    let b = a - 3;
+    let c = b * 2;
+    let d = c / 4;
+    let e = d % 3;
+    return e;
 }
 
-fn main() {
-    let a = 3;
-    let b = 4;
-    
-    imprimir_valor(a + b);
+fn test_logic() -> bool {
+    let a = true && false;
+    let b = true || false;
+    let c = !a;
+    return c;
 }

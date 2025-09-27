@@ -34,8 +34,8 @@ void yyerror(const char* s);
 %token TOK_PLUS TOK_MINUS TOK_MUL TOK_DIV TOK_EQ TOK_LT TOK_GT
 %token TOK_AND TOK_OR TOK_NOT
 %token TOK_SEMI TOK_COLON TOK_COMMA TOK_LPAREN TOK_RPAREN TOK_LBRACE TOK_RBRACE TOK_ARROW
-%token TOK_MOD
-%token TOK_FOR TOK_LOOP TOK_BREAK TOK_CONTINUE
+%token TOK_MOD TOK_FOR TOK_LOOP TOK_BREAK TOK_CONTINUE
+%token TOK_LBRACK TOK_RBRACK
 
 %type <program> program
 %type <func> function
@@ -44,7 +44,7 @@ void yyerror(const char* s);
 %type <param_list> param_list param_list_opt
 %type <param> param
 %type <str> opt_ret
-%type <expr> expr logic_and equality relational additive multiplicative unary primary call
+%type <expr> expr logic_and equality relational additive multiplicative unary primary call index_expr array_literal
 %type <expr_list> expr_list expr_list_opt
 
 %%
@@ -154,6 +154,16 @@ primary:
     | call                          { $$ = $1; }
     | TOK_ID                        { $$ = new Identifier($1); }
     | TOK_LPAREN expr TOK_RPAREN    { $$ = $2; }
+    | array_literal
+    | index_expr
+    ;
+
+array_literal:
+    TOK_LBRACK expr_list_opt TOK_RBRACK { $$ = new ArrayExpr(*$2); delete $2; }
+    ;
+
+index_expr:
+    primary TOK_LBRACK expr TOK_RBRACK { $$ = new IndexExpr($1, $3); }
     ;
 
 call:

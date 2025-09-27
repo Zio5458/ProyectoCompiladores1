@@ -1,13 +1,15 @@
-fn es_par(n: i32) -> bool {
-    return n % 2 == 0;
+fn test_operators() -> i32 {
+    let a = 10 + 5;
+    let b = a - 3;
+    let c = b * 2;
+    let d = c / 4;
+    let e = d % 3;
+    return e;
 }
 
-fn main() {
-    let numero = 7;
-
-    if es_par(numero) {
-        let mensaje = true;
-    } else {
-        let mensaje = false;
-    }
+fn test_logic() -> bool {
+    let a = true && false;
+    let b = true || false;
+    let c = !a;
+    return c;
 }

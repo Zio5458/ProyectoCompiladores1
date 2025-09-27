@@ -76,6 +76,9 @@ ARROW     "->"
 ")"                             { return TOK_RPAREN; }
 "{"                             { return TOK_LBRACE; }
 "}"                             { return TOK_RBRACE; }
+"["                             { return TOK_LBRACK; }
+"]"                             { return TOK_RBRACK; }
+
 {ARROW}                         { return TOK_ARROW; }
 
 .                               

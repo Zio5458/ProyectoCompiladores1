@@ -187,5 +187,30 @@ struct ContinueStmt : Stmt {
         cout << string(indent,' ') << "ContinueStmt\n";
     }
 };
+struct ArrayExpr : Expr {
+    vector<Expr*> elements;
+    ArrayExpr(const vector<Expr*>& elems) : elements(elems) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "ArrayExpr\n";
+        for (auto e : elements) e->print(indent+2);
+    }
+    ~ArrayExpr() {
+        for (auto e : elements) delete e;
+    }
+};
+struct IndexExpr : Expr {
+    Expr* array;
+    Expr* index;
+    IndexExpr(Expr* arr, Expr* idx) : array(arr), index(idx) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "IndexExpr\n";
+        array->print(indent+2);
+        index->print(indent+2);
+    }
+    ~IndexExpr() {
+        delete array;
+        delete index;
+    }
+};
 
 extern Program* g_program;

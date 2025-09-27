@@ -41,6 +41,11 @@ ARROW     "->"
 "if"                            { return TOK_IF; }
 "else"                          { return TOK_ELSE; }
 "while"                         { return TOK_WHILE; }
+"for"                           { return TOK_FOR; }
+"loop"                          { return TOK_LOOP; }
+"break"                         { return TOK_BREAK; }
+"continue"                      { return TOK_CONTINUE; }
+
 
 "i32"|"f64"|"bool"|"char"|"str" { yylval.str = dup_cstr(yytext); return TOK_TYPE; }
 
@@ -62,6 +67,7 @@ ARROW     "->"
 "*"                             { return TOK_MUL; }
 "/"                             { return TOK_DIV; }
 "="                             { return TOK_EQ; }
+"%"                             { return TOK_MOD; }
 
 ";"                             { return TOK_SEMI; }
 ":"                             { return TOK_COLON; }

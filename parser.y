@@ -34,6 +34,8 @@ void yyerror(const char* s);
 %token TOK_PLUS TOK_MINUS TOK_MUL TOK_DIV TOK_EQ TOK_LT TOK_GT
 %token TOK_AND TOK_OR TOK_NOT
 %token TOK_SEMI TOK_COLON TOK_COMMA TOK_LPAREN TOK_RPAREN TOK_LBRACE TOK_RBRACE TOK_ARROW
+%token TOK_MOD
+%token TOK_FOR TOK_LOOP TOK_BREAK TOK_CONTINUE
 
 %type <program> program
 %type <func> function
@@ -97,6 +99,13 @@ stmt:
     | TOK_RETURN TOK_SEMI { $$ = new ReturnStmt(nullptr); }
     | TOK_IF expr block TOK_ELSE block { $$ = new IfStmt($2, $3, $5); }
     | TOK_IF expr block { $$ = new IfStmt($2, $3, nullptr); }
+    | TOK_WHILE expr block { $$ = new WhileStmt($2, $3); }
+    | TOK_LOOP block { $$ = new LoopStmt($2); }
+    | TOK_FOR TOK_LPAREN stmt expr TOK_SEMI expr TOK_RPAREN block { 
+          $$ = new ForStmt($3, $4, $6, $8); 
+      }
+    | TOK_BREAK TOK_SEMI { $$ = new BreakStmt(); }
+    | TOK_CONTINUE TOK_SEMI { $$ = new ContinueStmt(); }
     | expr TOK_SEMI { $$ = new ExprStmt($1); }
     ;
 
@@ -130,6 +139,7 @@ additive:
 multiplicative:
       multiplicative TOK_MUL unary  { $$ = new Binary($1, "*", $3); }
     | multiplicative TOK_DIV unary  { $$ = new Binary($1, "/", $3); }
+    | multiplicative TOK_MOD unary  { $$ = new Binary($1, "%", $3); }
     | unary
     ;
 

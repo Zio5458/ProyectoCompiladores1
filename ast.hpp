@@ -9,10 +9,8 @@ struct Node {
     virtual ~Node() = default;
     virtual void print(int indent = 0) const = 0;
 };
-
 struct Expr : Node {};
 struct Stmt : Node {};
-
 struct Number : Expr {
     long long value;
     Number(long long v) : value(v) {}
@@ -20,7 +18,6 @@ struct Number : Expr {
         cout << string(indent,' ') << "Number(" << value << ")\n";
     }
 };
-
 struct BoolLit : Expr {
     bool value;
     BoolLit(bool v) : value(v) {}
@@ -28,7 +25,6 @@ struct BoolLit : Expr {
         cout << string(indent,' ') << "Bool(" << value << ")\n";
     }
 };
-
 struct Identifier : Expr {
     string name;
     Identifier(const string &n) : name(n) {}
@@ -36,7 +32,6 @@ struct Identifier : Expr {
         cout << string(indent,' ') << "Identifier(" << name << ")\n";
     }
 };
-
 struct Binary : Expr {
     string op;
     unique_ptr<Expr> left, right;
@@ -47,7 +42,6 @@ struct Binary : Expr {
         right->print(indent+2);
     }
 };
-
 struct Unary : Expr {
     string op;
     unique_ptr<Expr> expr;
@@ -57,7 +51,6 @@ struct Unary : Expr {
         expr->print(indent+2);
     }
 };
-
 struct LetStmt : Stmt {
     string name;
     unique_ptr<Expr> value;
@@ -67,7 +60,6 @@ struct LetStmt : Stmt {
         value->print(indent+2);
     }
 };
-
 struct ReturnStmt : Stmt {
     unique_ptr<Expr> value;
     ReturnStmt(Expr* v) : value(v) {}
@@ -76,7 +68,6 @@ struct ReturnStmt : Stmt {
         if (value) value->print(indent+2);
     }
 };
-
 struct ExprStmt : Stmt {
     unique_ptr<Expr> expr;
     ExprStmt(Expr* e) : expr(e) {}
@@ -85,7 +76,6 @@ struct ExprStmt : Stmt {
         if (expr) expr->print(indent+2);
     }
 };
-
 struct Block : Node {
     vector<unique_ptr<Stmt>> statements;
     void add(Stmt* s) { statements.emplace_back(s); }
@@ -94,7 +84,6 @@ struct Block : Node {
         for (auto &s : statements) s->print(indent+2);
     }
 };
-
 struct IfStmt : Stmt {
     unique_ptr<Expr> condition;
     unique_ptr<Block> then_block;
@@ -107,7 +96,6 @@ struct IfStmt : Stmt {
         if (else_block) else_block->print(indent+2);
     }
 };
-
 struct Param : Node {
     string name;
     string type;
@@ -154,6 +142,49 @@ struct Call : Expr {
         for(auto arg : args) {
             delete arg;
         }
+    }
+};
+struct WhileStmt : Stmt {
+    unique_ptr<Expr> condition;
+    unique_ptr<Block> body;
+    WhileStmt(Expr* cond, Block* b) : condition(cond), body(b) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "WhileStmt\n";
+        condition->print(indent+2);
+        body->print(indent+2);
+    }
+};
+struct LoopStmt : Stmt {
+    unique_ptr<Block> body;
+    LoopStmt(Block* b) : body(b) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "LoopStmt\n";
+        body->print(indent+2);
+    }
+};
+struct ForStmt : Stmt {
+    unique_ptr<Stmt> init;
+    unique_ptr<Expr> condition;
+    unique_ptr<Expr> increment;
+    unique_ptr<Block> body;
+    ForStmt(Stmt* i, Expr* c, Expr* inc, Block* b)
+        : init(i), condition(c), increment(inc), body(b) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "ForStmt\n";
+        if(init) init->print(indent+2);
+        if(condition) condition->print(indent+2);
+        if(increment) increment->print(indent+2);
+        body->print(indent+2);
+    }
+};
+struct BreakStmt : Stmt {
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "BreakStmt\n";
+    }
+};
+struct ContinueStmt : Stmt {
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "ContinueStmt\n";
     }
 };
 

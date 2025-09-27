@@ -37,10 +37,10 @@ void yyerror(const char* s);
 %type <func> function
 %type <block> block stmt_list
 %type <stmt> stmt
-%type <expr> expr factor primary
 %type <param_list> param_list param_list_opt
 %type <param> param
 %type <str> opt_ret
+%type <expr> expr logic_and equality relational additive multiplicative unary primary
 
 %%
 
@@ -109,23 +109,49 @@ stmt:
     ;
 
 expr:
-      expr TOK_OR factor { $$ = new Binary($1, "||", $3); }
-    | expr TOK_AND factor { $$ = new Binary($1, "&&", $3); }
-    | factor
+      expr TOK_OR logic_and         { $$ = new Binary($1, "||", $3); }
+    | logic_and
     ;
 
-factor:
-      factor TOK_EQ primary { $$ = new Binary($1, "==", $3); }
-    | factor TOK_LT primary { $$ = new Binary($1, "<", $3); }
-    | factor TOK_GT primary { $$ = new Binary($1, ">", $3); }
+logic_and:
+      logic_and TOK_AND equality    { $$ = new Binary($1, "&&", $3); }
+    | equality
+    ;
+
+equality:
+      equality TOK_EQ relational    { $$ = new Binary($1, "==", $3); }
+    | relational
+    ;
+
+relational:
+      relational TOK_LT additive    { $$ = new Binary($1, "<",  $3); }
+    | relational TOK_GT additive    { $$ = new Binary($1, ">",  $3); }
+    | additive
+    ;
+
+additive:
+      additive TOK_PLUS multiplicative  { $$ = new Binary($1, "+", $3); }
+    | additive TOK_MINUS multiplicative { $$ = new Binary($1, "-", $3); }
+    | multiplicative
+    ;
+
+multiplicative:
+      multiplicative TOK_MUL unary  { $$ = new Binary($1, "*", $3); }
+    | multiplicative TOK_DIV unary  { $$ = new Binary($1, "/", $3); }
+    | unary
+    ;
+
+unary:
+      TOK_NOT unary                 { $$ = new Unary("!", $2); }
     | primary
     ;
 
 primary:
-      TOK_NUM { $$ = new Number($1); }
-    | TOK_BOOL { $$ = new BoolLit($1); }
-    | TOK_ID { $$ = new Identifier($1); }
-    | TOK_LPAREN expr TOK_RPAREN { $$ = $2; }
+      TOK_NUM                       { $$ = new Number($1); }
+    | TOK_BOOL                      { $$ = new BoolLit($1); }
+    | TOK_ID                        { $$ = new Identifier($1); }
+    | TOK_LPAREN expr TOK_RPAREN    { $$ = $2; }
     ;
+
 
 %%

@@ -14,6 +14,7 @@ using namespace std;
     Program* program;
     Param* param;
     vector<Param*>* param_list;
+    vector<Expr*>* expr_list;
     vector<string>* string_list;
     char* str;
     long num;
@@ -41,9 +42,11 @@ void yyerror(const char* s);
 %type <param_list> param_list param_list_opt
 %type <param> param
 %type <str> opt_ret
-%type <expr> expr logic_and equality relational additive multiplicative unary primary
+%type <expr> expr logic_and equality relational additive multiplicative unary primary call
+%type <expr_list> expr_list expr_list_opt
 
 %%
+
 program:
       %empty { $$ = new Program(); g_program = $$; }
     | program function { $1->add($2); $$ = $1; }
@@ -52,18 +55,13 @@ program:
 function:
     TOK_FN TOK_ID TOK_LPAREN param_list_opt TOK_RPAREN opt_ret block {
         Func* f = new Func($2);
-        for (Param* p : *$4) {
-            f->params.push_back(p->name);
-        }
-        delete $4; //liberar vector temporal
-
-        //Tipo de retorno
+        for (Param* p : *$4) f->params.push_back(p->name);
+        delete $4;
         f->ret_type = $6 ? std::string($6) : "void";
         f->body = std::unique_ptr<Block>($7);
         $$ = f;
     }
     ;
-
 
 param_list_opt:
       %empty { $$ = new std::vector<Param*>(); }
@@ -118,8 +116,8 @@ equality:
     ;
 
 relational:
-      relational TOK_LT additive    { $$ = new Binary($1, "<",  $3); }
-    | relational TOK_GT additive    { $$ = new Binary($1, ">",  $3); }
+      relational TOK_LT additive    { $$ = new Binary($1, "<", $3); }
+    | relational TOK_GT additive    { $$ = new Binary($1, ">", $3); }
     | additive
     ;
 
@@ -143,7 +141,26 @@ unary:
 primary:
       TOK_NUM                       { $$ = new Number($1); }
     | TOK_BOOL                      { $$ = new BoolLit($1); }
+    | call                          { $$ = $1; }
     | TOK_ID                        { $$ = new Identifier($1); }
     | TOK_LPAREN expr TOK_RPAREN    { $$ = $2; }
     ;
+
+call:
+      TOK_ID TOK_LPAREN expr_list_opt TOK_RPAREN {
+        $$ = new Call(std::string($1), *$3);
+        delete $3;
+      }
+    ;
+
+expr_list_opt:
+      %empty { $$ = new std::vector<Expr*>(); }
+    | expr_list { $$ = $1; }
+    ;
+
+expr_list:
+      expr { $$ = new std::vector<Expr*>(); $$->push_back($1); }
+    | expr_list TOK_COMMA expr { $1->push_back($3); $$ = $1; }
+    ;
+
 %%

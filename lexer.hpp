@@ -2,10 +2,11 @@
 #include <istream>
 #include <ostream>
 #include <FlexLexer.h>
+using namespace std;
 
 class Lexer : public yyFlexLexer {
 public:
-  Lexer(std::istream* arg_yyin = nullptr, std::ostream* arg_yyout = nullptr);
+  Lexer(istream* arg_yyin = nullptr, ostream* arg_yyout = nullptr);
   int yylex() override;
 };
 

@@ -140,5 +140,21 @@ struct Program : Node {
         for (auto &f : functions) f->print(indent+2);
     }
 };
+struct Call : Expr {
+    string callee;
+    vector<Expr*> args;
+    Call(const string &c, const vector<Expr*> &a) : callee(c), args(a) {}
+    void print(int indent=0) const override {
+        cout << string(indent,' ') << "Call(" << callee << ")\n";
+        for(auto arg : args) {
+            if(arg) arg->print(indent + 2);
+        }
+    }
+    ~Call() {
+        for(auto arg : args) {
+            delete arg;
+        }
+    }
+};
 
 extern Program* g_program;

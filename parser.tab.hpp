@@ -109,12 +109,13 @@ union YYSTYPE
     Program* program;
     Param* param;
     vector<Param*>* param_list;
+    vector<Expr*>* expr_list;
     vector<string>* string_list;
     char* str;
     long num;
     bool boolean;
 
-#line 118 "parser.tab.hpp"
+#line 119 "parser.tab.hpp"
 
 };
 typedef union YYSTYPE YYSTYPE;

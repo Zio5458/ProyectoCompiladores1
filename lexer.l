@@ -81,5 +81,5 @@ ARROW     "->"
 
 {ARROW}                         { return TOK_ARROW; }
 
-.                               
+.                              
 <<EOF>>                         { return 0; }
